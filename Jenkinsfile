@@ -5,6 +5,7 @@ pipeline {
         SONARQUBE_URL = 'http://10.20.42.99:9000/'
         SONARQUBE_TOKEN = credentials('SONARQUBE_TOKEN')
         NEXUS_URL = 'http://10.20.42.99:8081/repository/maven-releases/'
+        NEXUS_CREDENTIALS = credentials('NEXUS_CREDENTIALS')
         DOCKER_IMAGE = 'myrepo/myapp'
         K8S_NAMESPACE = 'dev'
         
