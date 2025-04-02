@@ -1,12 +1,10 @@
 pipeline {
     agent any
+
     environment {
         SONARQUBE_URL = 'http://10.20.42.99:9000/'
-        SONARQUBE_TOKEN = credentials('sqa_9db12d7a00d6da5a9d94f91c0993e9aa246ac14d')
         NEXUS_URL = 'http://10.20.42.99:8081/repository/maven-releases/'
         DOCKER_IMAGE = 'myrepo/myapp'
-        DOCKER_USERNAME = credentials('pramodkumar054')
-        DOCKER_PASSWORD = credentials('PRamod@123')
         K8S_NAMESPACE = 'dev'
     }
     
@@ -26,7 +24,7 @@ pipeline {
         stage('Static Code Analysis - SonarQube') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar -Dsonar.host.url=$SONARQUBE_URL -Dsonar.login=$SONARQUBE_TOKEN'
+                    sh 'mvn sonar:sonar -Dsonar.host.url=$SONARQUBE_URL'
                 }
             }
         }
@@ -47,14 +45,23 @@ pipeline {
         
         stage('Push Docker Image to DockerHub') {
             steps {
-                sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                sh 'docker push $DOCKER_IMAGE:$BUILD_NUMBER'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
+                    sh 'docker push $DOCKER_IMAGE:$BUILD_NUMBER'
+                }
             }
         }
         
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f k8s/deployment.yaml -n $K8S_NAMESPACE'
+                sh '''
+                if [ -f k8s/deployment.yaml ]; then
+                    kubectl apply -f k8s/deployment.yaml -n $K8S_NAMESPACE
+                else
+                    echo "Deployment file not found!"
+                    exit 1
+                fi
+                '''
             }
         }
         
