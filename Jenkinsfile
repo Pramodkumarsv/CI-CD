@@ -45,7 +45,7 @@ pipeline {
         
         stage('Build & Scan Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .'
+                sh 'sudo docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .'
                 sh 'trivy image --severity HIGH,CRITICAL $DOCKER_IMAGE:$BUILD_NUMBER'
             }
         }
@@ -53,8 +53,8 @@ pipeline {
         stage('Push Docker Image to DockerHub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh 'docker login -u $DOCKER_USER -p $DOCKER_PASS'
-                    sh 'docker push $DOCKER_IMAGE:$BUILD_NUMBER'
+                    sh 'sudo docker login -u $DOCKER_USER -p $DOCKER_PASS'
+                    sh 'sudo docker push $DOCKER_IMAGE:$BUILD_NUMBER'
                 }
             }
         }
