@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/user/java-k8s-app.git'
+                git 'https://github.com/Pramodkumarsv/CI-CD.git'
             }
         }
         
