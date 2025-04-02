@@ -17,7 +17,7 @@ pipeline {
         
         stage('Compile & Unit Test') {
             steps {
-                sh 'mvn clean compile test'
+                sh '/usr/bin/mvn clean compile test'
             }
         }
         
