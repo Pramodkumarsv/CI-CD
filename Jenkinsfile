@@ -46,7 +46,7 @@ pipeline {
         stage('Build & Scan Docker Image') {
             steps {
                 sh 'sudo docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .'
-                sh 'trivy image --severity HIGH,CRITICAL $DOCKER_IMAGE:$BUILD_NUMBER'
+                sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --severity HIGH,CRITICAL myrepo/myapp:35'
             }
         }
         
