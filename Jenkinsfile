@@ -24,7 +24,7 @@ pipeline {
         stage('Static Code Analysis - SonarQube') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar -Dsonar.host.url=$SONARQUBE_URL'
+                    sh 'mvn sonar:sonar -Dsonar.host.url=$SONARQUBE_URL -Dsonar.login=$sonar'
                 }
             }
         }
