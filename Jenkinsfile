@@ -34,8 +34,12 @@ pipeline {
         
         stage('Build & Upload Artifact to Nexus') {
             steps {
-                sh 'mvn clean package'
-                sh 'mvn deploy -DaltDeploymentRepository=nexus-releases::default::$NEXUS_URL'
+                sh '''
+                    mvn deploy \
+                        -DaltDeploymentRepository=nexus-releases::default::http://10.20.42.99:8081/repository/maven-releases/ \
+                        -Dnexus.username=$NEXUS_CREDENTIALS_USR \
+                        -Dnexus.password=$NEXUS_CREDENTIALS_PSW
+                '''
             }
         }
         
