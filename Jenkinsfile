@@ -77,7 +77,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
                     sh '''
                     if [ -f k8s/deployment.yaml ]; then
-                        kubectl apply --validate=false -f k8s/deployment.yaml -n $K8S_NAMESPACE
+                        sudo kubectl apply --validate=false -f k8s/deployment.yaml -n $K8S_NAMESPACE
                     else
                         echo "Deployment file not found!"
                         exit 1
