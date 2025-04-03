@@ -45,8 +45,7 @@ pipeline {
         
         stage('Build & Scan Docker Image') {
             steps {
-                sh 'sudo docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .'
-                sh 'sudo docker tag $DOCKER_IMAGE:$BUILD_NUMBER $DOCKER_IMAGE:latest'
+                sh 'sudo docker build -t $DOCKER_IMAGE:$BUILD_NUMBER $DOCKER_IMAGE:LATEST'
                 // Ensure Trivy DB is updated before scanning
                 sh 'sudo docker run --rm aquasec/trivy:latest image --download-db-only'
                 
@@ -67,7 +66,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh 'sudo docker login -u $DOCKER_USER -p $DOCKER_PASS'
-                    sh 'sudo docker push $DOCKER_IMAGE:$BUILD_NUMBER'
+                    sh 'sudo docker push $DOCKER_IMAGE:$BUILD_NUMBER $DOCKER_IMAGE:LATEST'
                 }
             }
         }
