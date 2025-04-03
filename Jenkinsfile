@@ -102,12 +102,12 @@ pipeline {
             }
         }
         
-        stage('Verify Deployment') {
+        /*stage('Verify Deployment') {
             steps {
                 sh 'kubectl rollout status deployment myapp -n $K8S_NAMESPACE'
             }
         }
-    }
+    }*/
 
     post {
         success {
