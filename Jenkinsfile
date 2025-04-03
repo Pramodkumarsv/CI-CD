@@ -46,7 +46,7 @@ pipeline {
         stage('Build & Scan Docker Image') {
             steps {
                 sh 'sudo docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .'
-                sh 'sudo docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --severity HIGH,CRITICAL myrepo/myapp:35'
+                sh 'sudo docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --scanners vuln --severity HIGH,CRITICAL myrepo/myapp:35'
             }
         }
         
@@ -61,14 +61,16 @@ pipeline {
         
         stage('Deploy to Kubernetes') {
             steps {
-                sh '''
-                if [ -f k8s/deployment.yaml ]; then
-                    kubectl apply --validate=false -f k8s/deployment.yaml -n $K8S_NAMESPACE
-                else
-                    echo "Deployment file not found!"
-                    exit 1
-                fi
-                '''
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                    sh '''
+                    if [ -f k8s/deployment.yaml ]; then
+                        kubectl apply --validate=false -f k8s/deployment.yaml -n $K8S_NAMESPACE
+                    else
+                        echo "Deployment file not found!"
+                        exit 1
+                    fi
+                    '''
+                }
             }
         }
         
