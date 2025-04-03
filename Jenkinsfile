@@ -79,7 +79,7 @@ pipeline {
                     export KUBECONFIG=/var/lib/jenkins/.kube/config
                     kubectl config view
                     if [ -f k8s/deployment.yaml ]; then
-                        sudo kubectl apply --validate=false -f k8s/deployment.yaml -n $K8S_NAMESPACE
+                        kubectl apply --validate=false -f k8s/deployment.yaml -n $K8S_NAMESPACE
                     else
                         echo "Deployment file not found!"
                         exit 1
