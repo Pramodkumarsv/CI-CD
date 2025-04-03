@@ -46,9 +46,22 @@ pipeline {
         stage('Build & Scan Docker Image') {
             steps {
                 sh 'sudo docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .'
-                sh 'sudo docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --scanners vuln --severity HIGH,CRITICAL myrepo/myapp:35'
+                
+                // Ensure Trivy DB is updated before scanning
+                sh 'sudo docker run --rm aquasec/trivy:latest image --download-db-only'
+                
+                // Run vulnerability scan with updated DB
+                sh '''
+                sudo docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                -v $HOME/.cache/trivy:/root/.cache/trivy \
+                aquasec/trivy:latest image --scanners vuln --severity HIGH,CRITICAL \
+                $DOCKER_IMAGE:$BUILD_NUMBER
+                '''
             }
         }
+    
+
+
         
         stage('Push Docker Image to DockerHub') {
             steps {
