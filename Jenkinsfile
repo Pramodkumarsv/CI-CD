@@ -54,7 +54,7 @@ pipeline {
                 sudo docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                 -v $HOME/.cache/trivy:/root/.cache/trivy \
                 aquasec/trivy:latest image --scanners vuln --severity HIGH,CRITICAL \
-                $DOCKER_IMAGE:$BUILD_NUMBER
+                $DOCKER_IMAGE:latest
                 '''
             }
         }
