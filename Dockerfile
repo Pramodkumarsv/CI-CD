@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy JAR file from Jenkins workspace
-COPY /var/lib/jenkins/artifacts/myapp.jar myapp.jar
+COPY artifacts/myapp.jar myapp.jar
 
 # Expose the application port
 EXPOSE 8080
