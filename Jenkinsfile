@@ -39,6 +39,7 @@ pipeline {
         }
         stage('Store JAR') {
             steps {
+                sh 'mkdir -p /var/lib/jenkins/artifacts'
                 sh 'cp target/myapp.jar /var/lib/jenkins/artifacts/myapp.jar'
             }
         }
