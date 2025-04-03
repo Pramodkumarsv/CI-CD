@@ -46,7 +46,7 @@ pipeline {
         stage('Build & Scan Docker Image') {
             steps {
                 sh 'sudo docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .'
-                
+                sh 'sudo docker tag $DOCKER_IMAGE:$BUILD_NUMBER $DOCKER_IMAGE:latest'
                 // Ensure Trivy DB is updated before scanning
                 sh 'sudo docker run --rm aquasec/trivy:latest image --download-db-only'
                 
