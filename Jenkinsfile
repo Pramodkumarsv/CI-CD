@@ -76,6 +76,8 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
                     sh '''
+                    export KUBECONFIG=/var/lib/jenkins/.kube/config
+                    kubectl config view
                     if [ -f k8s/deployment.yaml ]; then
                         sudo kubectl apply --validate=false -f k8s/deployment.yaml -n $K8S_NAMESPACE
                     else
