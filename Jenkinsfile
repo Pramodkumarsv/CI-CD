@@ -32,7 +32,20 @@ pipeline {
             }
         }
         
-        stage('Build & Upload Artifact to Nexus') {
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('Store JAR') {
+            steps {
+                sh 'cp target/myapp.jar /var/lib/jenkins/artifacts/myapp.jar'
+            }
+        }
+        
+    
+
+        /*stage('Build & Upload Artifact to Nexus') {
             steps {
                 sh '''
                     mvn deploy \
@@ -41,7 +54,7 @@ pipeline {
                         -Dnexus.password=$NEXUS_CREDENTIALS_PSW
                 '''
             }
-        }
+        }*/
         
         stage('Build & Scan Docker Image') {
             steps {
